@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Calendar, CheckCircle2, FileText, AlertCircle } from "lucide-react"
 import Link from "next/link"
+import { useState, useEffect } from "react"
 import {
   RadarChart,
   PolarGrid,
@@ -45,9 +46,25 @@ const historicalData = [
 ]
 
 export default function EmployeeDashboardPage() {
+  const [windowWidth, setWindowWidth] = useState(1024) // Default to desktop width
+  
+  useEffect(() => {
+    // Set initial width
+    setWindowWidth(window.innerWidth)
+    
+    // Handle window resize
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+  
   const currentScore = 78
   const previousScore = 76
   const scoreDiff = currentScore - previousScore
+  const isMobile = windowWidth < 640
 
   return (
     <div className="min-h-screen bg-background">
@@ -157,12 +174,12 @@ export default function EmployeeDashboardPage() {
                         <PolarGrid stroke="oklch(0.92 0.005 264)" />
                         <PolarAngleAxis
                           dataKey="category"
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 9 : 11 }}
+                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: isMobile ? 9 : 11 }}
                         />
                         <PolarRadiusAxis
                           angle={90}
                           domain={[0, 100]}
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 8 : 10 }}
+                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: isMobile ? 8 : 10 }}
                         />
                         <Radar
                           name="スコア"
@@ -206,12 +223,12 @@ export default function EmployeeDashboardPage() {
                         <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.005 264)" />
                         <XAxis
                           dataKey="month"
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 9 : 10 }}
+                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: isMobile ? 9 : 10 }}
                         />
                         <YAxis
                           domain={[0, 100]}
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 8 : 10 }}
-                          width={window.innerWidth < 640 ? 30 : 40}
+                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: isMobile ? 8 : 10 }}
+                          width={isMobile ? 30 : 40}
                         />
                         <Tooltip
                           contentStyle={{

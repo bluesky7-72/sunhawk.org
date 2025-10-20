@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import Image from "next/image"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -41,7 +41,12 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="h-10 w-10 bg-primary rounded" />
+          <Image  className="rounded-md shadow-md hover:scale-105 transition-transform"
+        src="/logo.png"      // path relative to /public
+        alt="Product image"
+        width={35}
+        height={35}
+      />
             <span className="text-xl font-medium text-foreground">サンホーク</span>
           </Link>
         </div>

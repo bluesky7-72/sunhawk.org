@@ -1,5 +1,7 @@
 "use client"
 
+import React from "react"
+import { useWindowSize } from "@/hooks/use-window-size"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { DashboardNav } from "@/components/dashboard-nav"
@@ -59,6 +61,19 @@ export default function DashboardPage() {
   const currentScore = 78
   const previousScore = 76
   const scoreDiff = currentScore - previousScore
+  const { isMobile } = useWindowSize()
+  const [mounted, setMounted] = React.useState(false)
+  // Default font sizes that will be used during SSR
+  const tickFontSize = isMobile ? 9 : 11
+  const smallTickFontSize = isMobile ? 8 : 10
+  const xAxisHeight = isMobile ? 60 : 30
+  const axisWidth = isMobile ? 30 : 40
+  const xAxisTextAnchor = isMobile ? "end" : "middle"
+  const xAxisAngle = isMobile ? -45 : 0
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,93 +140,97 @@ export default function DashboardPage() {
 
             {/* Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-              {/* Radar Chart */}
-              <Card className="overflow-hidden">
-                <CardHeader className="pb-2 sm:pb-3 md:pb-4">
-                  <CardTitle className="text-base sm:text-lg md:text-xl">カテゴリ別評価</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">8つの主要カテゴリのバランス</CardDescription>
-                </CardHeader>
-                <CardContent className="p-2 sm:p-3 md:p-6">
-                  <ChartContainer
-                    config={{
-                      score: {
-                        label: "スコア",
-                        color: "oklch(0.45 0.15 264)",
-                      },
-                    }}
-                    className="h-[200px] sm:h-[250px] md:h-[300px] w-full"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart data={radarData} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-                        <PolarGrid stroke="oklch(0.92 0.005 264)" />
-                        <PolarAngleAxis
-                          dataKey="category"
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 9 : 11 }}
-                        />
-                        <PolarRadiusAxis
-                          angle={90}
-                          domain={[0, 100]}
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 8 : 10 }}
-                        />
-                        <Radar
-                          name="スコア"
-                          dataKey="score"
-                          stroke="oklch(0.45 0.15 264)"
-                          fill="oklch(0.45 0.15 264)"
-                          fillOpacity={0.3}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "oklch(0.98 0.002 264)",
-                            border: "1px solid oklch(0.92 0.005 264)",
-                            borderRadius: "6px",
-                            fontSize: "12px",
-                          }}
-                        />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
+              {mounted && (
+                <>
+                  {/* Radar Chart */}
+                  <Card className="overflow-hidden">
+                    <CardHeader className="pb-2 sm:pb-3 md:pb-4">
+                      <CardTitle className="text-base sm:text-lg md:text-xl">カテゴリ別評価</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">8つの主要カテゴリのバランス</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-2 sm:p-3 md:p-6">
+                      <ChartContainer
+                        config={{
+                          score: {
+                            label: "スコア",
+                            color: "oklch(0.45 0.15 264)",
+                          },
+                        }}
+                        className="h-[200px] sm:h-[250px] md:h-[300px] w-full"
+                      >
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RadarChart data={radarData} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                            <PolarGrid stroke="oklch(0.92 0.005 264)" />
+                            <PolarAngleAxis
+                              dataKey="category"
+                              tick={{ fill: "oklch(0.55 0.01 264)", fontSize: tickFontSize }}
+                            />
+                            <PolarRadiusAxis
+                              angle={90}
+                              domain={[0, 100]}
+                              tick={{ fill: "oklch(0.55 0.01 264)", fontSize: smallTickFontSize }}
+                            />
+                            <Radar
+                              name="スコア"
+                              dataKey="score"
+                              stroke="oklch(0.45 0.15 264)"
+                              fill="oklch(0.45 0.15 264)"
+                              fillOpacity={0.3}
+                            />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: "oklch(0.98 0.002 264)",
+                                border: "1px solid oklch(0.92 0.005 264)",
+                                borderRadius: "6px",
+                                fontSize: "12px",
+                              }}
+                            />
+                          </RadarChart>
+                        </ResponsiveContainer>
+                      </ChartContainer>
+                    </CardContent>
+                  </Card>
 
-              {/* Department Comparison */}
-              <Card className="overflow-hidden">
-                <CardHeader className="pb-2 sm:pb-3 md:pb-4">
-                  <CardTitle className="text-base sm:text-lg md:text-xl">部門別スコア</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">各部門の総合スコア比較</CardDescription>
-                </CardHeader>
-                <CardContent className="p-2 sm:p-3 md:p-6">
-                  <ChartContainer
-                    config={{
-                      score: {
-                        label: "スコア",
-                        color: "oklch(0.45 0.15 264)",
-                      },
-                    }}
-                    className="h-[200px] sm:h-[250px] md:h-[300px] w-full"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={departmentData} margin={{ top: 10, right: 10, bottom: 30, left: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.005 264)" />
-                        <XAxis
-                          dataKey="name"
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 9 : 10 }}
-                          angle={window.innerWidth < 640 ? -45 : 0}
-                          textAnchor={window.innerWidth < 640 ? "end" : "middle"}
-                          height={window.innerWidth < 640 ? 60 : 30}
-                        />
-                        <YAxis
-                          domain={[0, 100]}
-                          tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 8 : 10 }}
-                          width={window.innerWidth < 640 ? 30 : 40}
-                        />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="score" fill="oklch(0.45 0.15 264)" radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
+                  {/* Department Comparison */}
+                  <Card className="overflow-hidden">
+                    <CardHeader className="pb-2 sm:pb-3 md:pb-4">
+                      <CardTitle className="text-base sm:text-lg md:text-xl">部門別スコア</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">各部門の総合スコア比較</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-2 sm:p-3 md:p-6">
+                      <ChartContainer
+                        config={{
+                          score: {
+                            label: "スコア",
+                            color: "oklch(0.45 0.15 264)",
+                          },
+                        }}
+                        className="h-[200px] sm:h-[250px] md:h-[300px] w-full"
+                      >
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={departmentData} margin={{ top: 10, right: 10, bottom: 30, left: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.005 264)" />
+                            <XAxis
+                              dataKey="name"
+                              tick={{ fill: "oklch(0.55 0.01 264)", fontSize: tickFontSize }}
+                              angle={xAxisAngle}
+                              textAnchor={xAxisTextAnchor}
+                              height={xAxisHeight}
+                            />
+                            <YAxis
+                              domain={[0, 100]}
+                              tick={{ fill: "oklch(0.55 0.01 264)", fontSize: smallTickFontSize }}
+                              width={axisWidth}
+                            />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Bar dataKey="score" fill="oklch(0.45 0.15 264)" radius={[4, 4, 0, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </ChartContainer>
+                    </CardContent>
+                  </Card>
+                </>
+              )}
             </div>
 
             {/* Historical Trend */}
@@ -235,13 +254,13 @@ export default function DashboardPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.005 264)" />
                       <XAxis
                         dataKey="month"
-                        tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 9 : 10 }}
-                        width={window.innerWidth < 640 ? 30 : 40}
+                        tick={{ fill: "oklch(0.55 0.01 264)", fontSize: tickFontSize }}
+                        width={axisWidth}
                       />
                       <YAxis
                         domain={[0, 100]}
-                        tick={{ fill: "oklch(0.55 0.01 264)", fontSize: window.innerWidth < 640 ? 8 : 10 }}
-                        width={window.innerWidth < 640 ? 30 : 40}
+                        tick={{ fill: "oklch(0.55 0.01 264)", fontSize: smallTickFontSize }}
+                        width={axisWidth}
                       />
                       <Tooltip
                         contentStyle={{

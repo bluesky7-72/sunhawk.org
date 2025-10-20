@@ -1,5 +1,5 @@
 "use client"
-
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Bell, LogOut, User } from "lucide-react"
 import Link from "next/link"
@@ -18,7 +18,12 @@ export function DashboardHeader() {
     <header className="border-b border-border bg-card sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 md:px-6 py-4">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 bg-primary rounded" />
+        <Image  className="rounded-md shadow-md hover:scale-105 transition-transform"
+        src="/logo.png"      // path relative to /public
+        alt="Product image"
+        width={35}
+        height={35}
+      />
           <span className="text-lg font-medium text-foreground hidden sm:inline">サンホーク</span>
         </div>
 

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, BarChart3, Users, FileText, Shield } from "lucide-react"
 
@@ -8,8 +9,13 @@ export default function HomePage() {
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 bg-primary rounded" />
+          <div className="flex items-center gap-2 " >
+             <Image  className="rounded-md shadow-md hover:scale-105 transition-transform"
+        src="/logo.png"      // path relative to /public
+        alt="Product image"
+        width={35}
+        height={35}
+      />
             <span className="text-lg font-medium text-foreground">サンホーク</span>
           </div>
           <nav className="flex items-center gap-6">
